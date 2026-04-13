@@ -4,6 +4,8 @@ const envSchema = z.object({
   PORT: z.string().optional(),
   DATABASE_URL: z.string(),
   JWT_SECRET: z.string(),
+  EMAIL_USER: z.string().email(),
+  EMAIL_PASS: z.string(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {
