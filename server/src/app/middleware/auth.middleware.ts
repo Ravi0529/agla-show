@@ -5,7 +5,7 @@ export function authenticationMiddleware() {
   return function (req: Request, res: Response, next: NextFunction) {
     const header = req.headers["authorization"];
 
-    if (!header) return next(); // allow public routes
+    if (!header) return next();
 
     if (!header.startsWith("Bearer ")) {
       return res
@@ -36,7 +36,6 @@ export function authenticationMiddleware() {
 
 export function restrictToAuthenticatedUser() {
   return function (req: Request, res: Response, next: NextFunction) {
-    // @ts-ignore
     if (!req.user)
       return res.status(401).json({ error: "Authentication Required" });
     return next();
