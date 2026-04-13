@@ -4,7 +4,7 @@ import { signupSchema, signinSchema } from "./auth.schema";
 import { db } from "../../db";
 import { users, otps } from "../../db/schema";
 import { eq } from "drizzle-orm";
-import { createUserToken } from "./auth.utils";
+import { createUserToken } from "../utils/token";
 import { emailQueue } from "../queue/email.queue";
 
 class AuthenticationController {
