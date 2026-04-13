@@ -1,5 +1,7 @@
+import "dotenv/config";
 import { Worker } from "bullmq";
 import { sendOtpEmail } from "../services/email.service";
+import { env } from "../../env";
 
 new Worker(
   "email-queue",
@@ -9,8 +11,7 @@ new Worker(
   },
   {
     connection: {
-      host: "127.0.0.1",
-      port: 6379,
+      url: env.REDIS_URL,
     },
   },
 )

@@ -6,6 +6,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string(),
   EMAIL_USER: z.string().email(),
   EMAIL_PASS: z.string(),
+  REDIS_URL: z.string(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

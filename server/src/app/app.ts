@@ -1,6 +1,7 @@
 import express, { urlencoded } from "express";
 import type { Express, Request, Response } from "express";
 import { authenticationMiddleware } from "./middleware/auth.middleware";
+import { authRouter } from "./auth/routes";
 
 export function createApplication(): Express {
   const app = express();
@@ -12,6 +13,8 @@ export function createApplication(): Express {
   app.get("/health", (_: Request, res: Response) => {
     res.json({ message: "Welcome to the AglaShow server!" });
   });
+
+  app.use("/api/auth", authRouter);
 
   return app;
 }

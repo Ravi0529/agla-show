@@ -1,9 +1,9 @@
 import { Queue } from "bullmq";
+import { env } from "../../env";
 
 export const emailQueue = new Queue("email-queue", {
   connection: {
-    host: "127.0.0.1",
-    port: 6379,
+    url: env.REDIS_URL,
   },
   defaultJobOptions: {
     attempts: 3,

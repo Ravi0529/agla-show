@@ -1,10 +1,11 @@
+import "dotenv/config";
 import { createServer } from "node:http";
 import { createApplication } from "./app/app";
 import { env } from "./env";
 
 async function main() {
   try {
-    const server = createServer(createApplication);
+    const server = createServer(createApplication());
     const PORT: number = env.PORT ? +env.PORT : 5000;
 
     server.listen(PORT, () => {
