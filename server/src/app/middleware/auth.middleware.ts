@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { verifyUserToken } from "../auth/utils";
+import { verifyUserToken } from "../auth/auth.utils";
 
 export function authenticationMiddleware() {
   return function (req: Request, res: Response, next: NextFunction) {

@@ -1,7 +1,7 @@
 import express, { urlencoded } from "express";
 import type { Express, Request, Response } from "express";
 import { authenticationMiddleware } from "./middleware/auth.middleware";
-import { authRouter } from "./auth/routes";
+import { authRouter } from "./auth/auth.routes";
 
 export function createApplication(): Express {
   const app = express();
