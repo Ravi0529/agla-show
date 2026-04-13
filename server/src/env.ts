@@ -7,6 +7,9 @@ const envSchema = z.object({
   EMAIL_USER: z.string().email(),
   EMAIL_PASS: z.string(),
   REDIS_URL: z.string(),
+  IMAGEKIT_PUBLIC_KEY: z.string(),
+  IMAGEKIT_PRIVATE_KEY: z.string(),
+  IMAGEKIT_URL_ENDPOINT: z.string(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {
