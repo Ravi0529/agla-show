@@ -13,4 +13,10 @@ new Worker(
       port: 6379,
     },
   },
-);
+)
+  .on("completed", (job) => {
+    console.log(`Email sent to ${job.data.email}`);
+  })
+  .on("failed", (job, error) => {
+    console.error(`Email failed for ${job?.data.email}`, error);
+  });

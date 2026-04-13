@@ -7,6 +7,8 @@
     "start": "node dist/index.js",
     "build": "tsc -p .",
     "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
+    "worker": "node dist/app/queue/email.worker.js",
+    "worker:dev": "tsx watch src/app/queue/email.worker.ts",
     "studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate"
