@@ -9,11 +9,14 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
+
 export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).unique().notNull(),
   password: text("password").notNull(),
+  role: userRoleEnum("role").default("user").notNull(),
   isVerified: boolean("is_verified").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")
