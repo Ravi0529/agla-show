@@ -5,6 +5,7 @@ import { authenticationMiddleware } from "./middleware/auth.middleware";
 import { authRouter } from "./auth/auth.routes";
 import { movieRouter } from "./movie/movie.routes";
 import { theatreRouter } from "./theatre/theatre.routes";
+import { screenRouter } from "./screen/screen.routes";
 
 export function createApplication(): Express {
   const app = express();
@@ -20,6 +21,7 @@ export function createApplication(): Express {
   app.use("/api/auth", authRouter);
   app.use("/api/movie", movieRouter);
   app.use("/api/theatre", theatreRouter);
+  app.use("/api/screen", screenRouter);
 
   return app;
 }
