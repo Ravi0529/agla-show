@@ -8,6 +8,7 @@ import PublicRoute from "../shared/routes/PublicRoute";
 import MainLayout from "../shared/layouts/MainLayout";
 import MovieDetailsPage from "../features/movie/pages/MovieDetailsPage";
 import ShowPage from "../features/show/pages/ShowPage";
+import SeatPage from "../features/seat/pages/SeatPage";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
           {
             path: "/shows/:movieId",
             element: <ShowPage />,
+          },
+          {
+            path: "/seats/:showId",
+            element: <SeatPage />,
           },
         ],
       },
