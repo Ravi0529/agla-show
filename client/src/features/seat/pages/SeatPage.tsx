@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getSeats, lockSeats } from "../api/seat.api";
+import { getSeats } from "../api/seat.api";
+import {
+  createBooking,
+  type CreateBookingResponse,
+  verifyPayment,
+} from "../../booking/api/booking.api";
 import Loader from "../../../shared/components/Loader";
 import Button from "../../../shared/components/Button";
 import {
@@ -20,6 +25,40 @@ type Seat = {
   seatNumber: string | number;
   status: SeatStatus;
 };
+
+type RazorpaySuccessResponse = {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+};
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: unknown) => { open: () => void };
+  }
+}
+
+async function loadRazorpayScript() {
+  if (window.Razorpay) return true;
+
+  return await new Promise<boolean>((resolve) => {
+    const existing = document.querySelector(
+      'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
+    );
+    if (existing) {
+      existing.addEventListener("load", () => resolve(true));
+      existing.addEventListener("error", () => resolve(false));
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
 
 function compareSeatNumber(a: Seat["seatNumber"], b: Seat["seatNumber"]) {
   const as = String(a);
@@ -46,6 +85,7 @@ export default function SeatPage() {
   const [seats, setSeats] = useState<Seat[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
     fetchSeats();
@@ -72,18 +112,68 @@ export default function SeatPage() {
     }
   };
 
-  const handleLockSeats = async () => {
+  const handleBooking = async () => {
+    if (!showId || selectedSeats.length === 0) return;
+
     try {
-      await lockSeats(selectedSeats);
-      alert("Seats locked successfully!");
-      fetchSeats();
+      setPaying(true);
+
+      const ok = await loadRazorpayScript();
+      if (!ok) {
+        alert("Failed to load payment gateway. Please try again.");
+        return;
+      }
+
+      const res: CreateBookingResponse = await createBooking(
+        showId,
+        selectedSeats
+      );
+      const bookingId = res.booking.id;
+      const orderId = res.order.id;
+      const amount = res.order.amount; // already in paise from backend
+
+      const key =
+        (import.meta as unknown as { env?: Record<string, string | undefined> })
+          .env?.VITE_RAZORPAY_KEY_ID ?? "";
+
+      const options = {
+        key,
+        amount,
+        currency: res.order.currency ?? "INR",
+        order_id: orderId,
+        name: "AglaShow",
+        description: "Movie ticket booking",
+        handler: async (response: RazorpaySuccessResponse) => {
+          await verifyPayment({
+            bookingId,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpaySignature: response.razorpay_signature,
+          });
+
+          alert("Booking successful!");
+          setSelectedSeats([]);
+          fetchSeats();
+        },
+        theme: { color: "#E11D48" },
+      };
+
+      if (!window.Razorpay) {
+        alert("Payment gateway unavailable. Please refresh and try again.");
+        return;
+      }
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err: unknown) {
       const message =
         typeof err === "object" && err !== null && "response" in err
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ((err as any).response?.data?.error as string | undefined)
           : undefined;
-      alert(message || "Error locking seats, try again later!");
+      alert(message || "Payment failed. Please try again.");
+    } finally {
+      setPaying(false);
     }
   };
 
@@ -92,7 +182,7 @@ export default function SeatPage() {
   const selectedCount = selectedSeats.length;
   const totalSeats = seats.length;
   const orderedSeats = [...seats].sort((x, y) =>
-    compareSeatNumber(x.seatNumber, y.seatNumber),
+    compareSeatNumber(x.seatNumber, y.seatNumber)
   );
 
   const getGridCols = (count: number) => {
@@ -148,17 +238,19 @@ export default function SeatPage() {
             <div className="sm:w-56">
               <Button
                 type="button"
-                onClick={handleLockSeats}
-                disabled={selectedCount === 0}
+                onClick={handleBooking}
+                disabled={selectedCount === 0 || paying}
               >
                 <span className="inline-flex items-center gap-2">
-                  <LockKeyhole className="h-4 w-4" aria-hidden="true" />
-                  Lock Seats{selectedCount ? ` (${selectedCount})` : ""}
+                  <Ticket className="h-4 w-4" aria-hidden="true" />
+                  {paying
+                    ? "Opening payment..."
+                    : `Pay & Book${selectedCount ? ` (${selectedCount})` : ""}`}
                 </span>
               </Button>
               <div className="mt-2 flex items-center gap-2 text-xs text-zinc-500">
                 <Info className="h-4 w-4" aria-hidden="true" />
-                Select at least 1 seat
+                Seats lock automatically (expires in ~5 minutes)
               </div>
             </div>
           </div>
@@ -229,10 +321,10 @@ export default function SeatPage() {
                       const state = isSelected
                         ? "bg-red-600 text-white shadow-sm shadow-red-600/20"
                         : isBooked
-                          ? "bg-zinc-200 text-zinc-500"
-                          : isLocked
-                            ? "bg-amber-200 text-amber-900"
-                            : "bg-white text-zinc-800 ring-1 ring-zinc-300 hover:ring-red-200";
+                        ? "bg-zinc-200 text-zinc-500"
+                        : isLocked
+                        ? "bg-amber-200 text-amber-900"
+                        : "bg-white text-zinc-800 ring-1 ring-zinc-300 hover:ring-red-200";
 
                       return (
                         <button
@@ -245,10 +337,10 @@ export default function SeatPage() {
                             isSelected
                               ? `Selected seat ${seat.seatNumber}`
                               : isBooked
-                                ? `Booked seat ${seat.seatNumber}`
-                                : isLocked
-                                  ? `Locked seat ${seat.seatNumber}`
-                                  : `Available seat ${seat.seatNumber}`
+                              ? `Booked seat ${seat.seatNumber}`
+                              : isLocked
+                              ? `Locked seat ${seat.seatNumber}`
+                              : `Available seat ${seat.seatNumber}`
                           }
                           type="button"
                         >
