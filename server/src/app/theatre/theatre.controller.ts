@@ -17,7 +17,7 @@ class TheatreController {
 
       return res.status(201).json({
         message: "Theatre created successfully",
-        theatre,
+        data: theatre,
       });
     } catch (error) {
       return res.status(500).json({ error: "Failed to create theatre" });
@@ -28,7 +28,7 @@ class TheatreController {
     try {
       const theatres = await this.theatreService.getAllTheatres();
 
-      return res.status(200).json({ theatres });
+      return res.status(200).json({ data: theatres });
     } catch (error) {
       return res.status(500).json({ error: "Failed to fetch theatres" });
     }
@@ -51,7 +51,7 @@ class TheatreController {
         return res.status(404).json({ error: "Theatre not found" });
       }
 
-      return res.status(200).json({ theatre });
+      return res.status(200).json({ data: theatre });
     } catch (error) {
       return res.status(500).json({ error: "Failed to fetch theatre" });
     }
