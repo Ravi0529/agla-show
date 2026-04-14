@@ -4,20 +4,26 @@ import SignupPage from "../features/auth/pages/SignupPage";
 import VerifyOtpPage from "../features/auth/pages/VerifyOtpPage";
 import HomePage from "../features/movie/pages/HomePage";
 import ProtectedRoute from "../shared/routes/ProtectedRoute";
+import PublicRoute from "../shared/routes/PublicRoute";
 import MainLayout from "../shared/layouts/MainLayout";
 
 export const router = createBrowserRouter([
   {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/signup",
-    element: <SignupPage />,
-  },
-  {
-    path: "/verify-otp",
-    element: <VerifyOtpPage />,
+    element: <PublicRoute />,
+    children: [
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignupPage />,
+      },
+      {
+        path: "/verify-otp",
+        element: <VerifyOtpPage />,
+      },
+    ],
   },
   {
     path: "*",
