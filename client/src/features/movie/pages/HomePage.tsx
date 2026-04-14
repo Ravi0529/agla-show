@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getMovies } from "../api/movie.api";
 import Loader from "../../../shared/components/Loader";
 import { Film, SearchX } from "lucide-react";
+import MovieCard from "../components/MovieCard";
 
 const HomePage = () => {
   const [movies, setMovies] = useState<any[]>([]);
@@ -35,11 +36,8 @@ const HomePage = () => {
               <Film className="h-4 w-4" aria-hidden="true" />
               Now Showing
             </div>
-            <h1 className="mt-3 text-2xl font-semibold tracking-tight text-zinc-950 sm:text-3xl">
-              Movies
-            </h1>
-            <p className="mt-1 text-sm text-zinc-600">
-              Browse posters and pick your next watch.
+            <p className="mt-3 text-md font-medium text-zinc-600">
+              Browse and pick your next watch.
             </p>
           </div>
         </div>
@@ -60,28 +58,7 @@ const HomePage = () => {
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {movies.map((movie) => (
-                <article
-                  key={movie.id}
-                  className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <div className="relative aspect-2/3 overflow-hidden bg-zinc-100">
-                    <img
-                      src={movie.posterUrl}
-                      alt={movie.title}
-                      className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-                      loading="lazy"
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
-                  </div>
-                  <div className="p-3">
-                    <h2 className="line-clamp-2 text-sm font-semibold text-zinc-950">
-                      {movie.title}
-                    </h2>
-                    <p className="mt-1 text-xs text-zinc-500">
-                      Tap to view showtimes
-                    </p>
-                  </div>
-                </article>
+                <MovieCard key={movie.id} movie={movie} />
               ))}
             </div>
           )}
