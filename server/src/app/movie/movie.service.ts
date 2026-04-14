@@ -16,7 +16,7 @@ class MovieService {
       .insert(movies)
       .values({
         title: data.title,
-        description: data.description,
+        description: data.description ?? null,
         duration: data.duration,
         language: data.language,
         posterUrl: data.posterUrl,
@@ -27,7 +27,8 @@ class MovieService {
   }
 
   async getAllMovies() {
-    return db.select().from(movies);
+    const data = await db.select().from(movies);
+    return data;
   }
 
   async getMovieById(id: string) {

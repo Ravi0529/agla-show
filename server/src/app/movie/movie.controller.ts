@@ -32,7 +32,7 @@ class MovieController {
 
       return res.status(201).json({
         message: "Movie created successfully",
-        movie: movie,
+        data: movie,
       });
     } catch (error) {
       return res.status(500).json({ error: "Failed to create movie" });
@@ -41,9 +41,10 @@ class MovieController {
 
   public async getAllMovies(_: Request, res: Response) {
     try {
-      const movies = await this.movieService.getAllMovies();
+      const allMovies = await this.movieService.getAllMovies();
+      console.log(allMovies.length);
 
-      return res.status(200).json({ movies: movies });
+      return res.status(200).send({ data: allMovies });
     } catch (error) {
       return res.status(500).json({ error: "Failed to fetch movies" });
     }
@@ -62,7 +63,7 @@ class MovieController {
         return res.status(404).json({ error: "Movie not found" });
       }
 
-      return res.status(200).json({ movie: movie });
+      return res.status(200).json({ data: movie });
     } catch (error) {
       return res.status(500).json({ error: "Failed to fetch movie" });
     }
