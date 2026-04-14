@@ -19,6 +19,20 @@ class SeatController {
       return res.status(500).json({ error: "Failed to fetch seats" });
     }
   }
+
+  async lockSeats(req: Request, res: Response) {
+    try {
+      const { seatIds } = req.body;
+      // @ts-ignore
+      const userId = req.user.id;
+
+      await this.seatService.lockSeats(userId, seatIds);
+
+      return res.json({ message: "Seats locked" });
+    } catch (err: any) {
+      return res.status(400).json({ error: err.message });
+    }
+  }
 }
 
 export default SeatController;
