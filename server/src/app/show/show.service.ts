@@ -1,5 +1,5 @@
 import { db } from "../../db";
-import { shows, screens } from "../../db/schema";
+import { shows, screens, theatres } from "../../db/schema";
 import { eq } from "drizzle-orm";
 import SeatService from "../seat/seat.service";
 
@@ -40,6 +40,32 @@ class ShowService {
     await seatService.createSeatsForShow(show.id, screen.totalSeats);
 
     return show;
+  }
+
+  async getShowsByMovie(movieId: string) {
+    const result = await db
+      .select({
+        id: shows.id,
+        startTime: shows.startTime,
+        price: shows.price,
+
+        screen: {
+          id: screens.id,
+          name: screens.name,
+        },
+
+        theatre: {
+          id: theatres.id,
+          name: theatres.name,
+          location: theatres.location,
+        },
+      })
+      .from(shows)
+      .innerJoin(screens, eq(shows.screenId, screens.id))
+      .innerJoin(theatres, eq(screens.theatreId, theatres.id))
+      .where(eq(shows.movieId, movieId));
+
+    return result;
   }
 }
 

@@ -23,6 +23,22 @@ class ShowController {
       return res.status(500).json({ error: "Failed to create show" });
     }
   }
+
+  public async getShowsByMovie(req: Request, res: Response) {
+    try {
+      const { movieId } = req.params;
+
+      if (!movieId || Array.isArray(movieId)) {
+        return res.status(400).json({ error: "Movie ID required" });
+      }
+
+      const shows = await this.showService.getShowsByMovie(movieId);
+
+      return res.status(200).json({ data: shows });
+    } catch (error) {
+      return res.status(500).json({ error: "Failed to fetch shows" });
+    }
+  }
 }
 
 export default ShowController;

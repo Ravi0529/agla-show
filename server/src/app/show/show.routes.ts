@@ -13,3 +13,9 @@ showRouter.post(
   restrictToAdmin(),
   showController.createShow.bind(showController),
 );
+
+showRouter.get(
+  "/movie/:movieId",
+  restrictToAuthenticatedUser(),
+  showController.getShowsByMovie.bind(showController),
+);
