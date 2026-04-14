@@ -3,10 +3,13 @@ import { getMovies } from "../api/movie.api";
 import Loader from "../../../shared/components/Loader";
 import { Film, SearchX } from "lucide-react";
 import MovieCard from "../components/MovieCard";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [movies, setMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -58,7 +61,13 @@ const HomePage = () => {
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {movies.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} />
+                <div
+                  key={movie.id}
+                  onClick={() => navigate(`/movie/${movie.id}`)}
+                  className="cursor-pointer"
+                >
+                  <MovieCard movie={movie} />
+                </div>
               ))}
             </div>
           )}
