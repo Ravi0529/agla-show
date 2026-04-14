@@ -92,7 +92,7 @@ export default function SeatPage() {
   const selectedCount = selectedSeats.length;
   const totalSeats = seats.length;
   const orderedSeats = [...seats].sort((x, y) =>
-    compareSeatNumber(x.seatNumber, y.seatNumber)
+    compareSeatNumber(x.seatNumber, y.seatNumber),
   );
 
   const getGridCols = (count: number) => {
@@ -103,6 +103,13 @@ export default function SeatPage() {
     return 20;
   };
   const gridCols = getGridCols(totalSeats);
+
+  const getMobileCols = (count: number) => {
+    if (count <= 60) return 10;
+    if (count <= 120) return 9;
+    return 8;
+  };
+  const mobileCols = Math.min(gridCols, getMobileCols(totalSeats));
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -198,10 +205,15 @@ export default function SeatPage() {
               <div className="max-h-[70vh] overflow-auto lg:max-h-none lg:overflow-visible">
                 <div className="min-w-full pb-6">
                   <div
-                    className="grid gap-2"
-                    style={{
-                      gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
-                    }}
+                    className="grid gap-2 grid-cols-[repeat(var(--cols),minmax(0,1fr))] lg:grid-cols-[repeat(var(--cols-lg),minmax(0,1fr))]"
+                    style={
+                      {
+                        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                        ["--cols" as any]: mobileCols,
+                        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                        ["--cols-lg" as any]: gridCols,
+                      } as React.CSSProperties
+                    }
                   >
                     {orderedSeats.map((seat) => {
                       const isSelected = selectedSeats.includes(seat.id);
@@ -210,17 +222,17 @@ export default function SeatPage() {
                       const isLocked = seat.status === "locked";
 
                       const base =
-                        "aspect-square w-full rounded-lg text-[10px] font-semibold leading-none transition sm:text-xs";
+                        "aspect-square w-full rounded-lg text-xs font-semibold leading-none transition sm:text-xs";
                       const interactive = isAvailable
                         ? "cursor-pointer hover:-translate-y-0.5"
                         : "cursor-not-allowed opacity-75";
                       const state = isSelected
                         ? "bg-red-600 text-white shadow-sm shadow-red-600/20"
                         : isBooked
-                        ? "bg-zinc-200 text-zinc-500"
-                        : isLocked
-                        ? "bg-amber-200 text-amber-900"
-                        : "bg-white text-zinc-800 ring-1 ring-zinc-300 hover:ring-red-200";
+                          ? "bg-zinc-200 text-zinc-500"
+                          : isLocked
+                            ? "bg-amber-200 text-amber-900"
+                            : "bg-white text-zinc-800 ring-1 ring-zinc-300 hover:ring-red-200";
 
                       return (
                         <button
@@ -233,10 +245,10 @@ export default function SeatPage() {
                             isSelected
                               ? `Selected seat ${seat.seatNumber}`
                               : isBooked
-                              ? `Booked seat ${seat.seatNumber}`
-                              : isLocked
-                              ? `Locked seat ${seat.seatNumber}`
-                              : `Available seat ${seat.seatNumber}`
+                                ? `Booked seat ${seat.seatNumber}`
+                                : isLocked
+                                  ? `Locked seat ${seat.seatNumber}`
+                                  : `Available seat ${seat.seatNumber}`
                           }
                           type="button"
                         >
