@@ -3,20 +3,18 @@ import ScreenController from "./screen.controller";
 import { restrictToAuthenticatedUser } from "../middleware/auth.middleware";
 import { restrictToAdmin } from "../middleware/admin.middleware";
 
-const router = express.Router();
+export const screenRouter = express.Router();
 const controller = new ScreenController();
 
-router.post(
+screenRouter.post(
   "/create-screen",
   restrictToAuthenticatedUser(),
   restrictToAdmin(),
   controller.createScreen.bind(controller),
 );
 
-router.get(
+screenRouter.get(
   "/:theatreId",
   restrictToAuthenticatedUser(),
   controller.getScreensByTheatre.bind(controller),
 );
-
-export const screenRouter = router;
