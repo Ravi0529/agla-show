@@ -18,7 +18,7 @@ export function createApplication(): Express {
 
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: ["http://localhost:5173", "https://agla-show.onrender.com/"],
       credentials: true,
     }),
   );
