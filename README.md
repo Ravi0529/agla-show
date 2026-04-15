@@ -1,8 +1,8 @@
-## AglaShow 🎬 — BookMyShow-style ticketing app
+## AglaShow — Ticket Booking App
 
 AglaShow is a full‑stack movie ticket booking app with **OTP auth**, **movie listings**, **showtimes**, **seat selection with locking**, and **Razorpay payments**.
 
-It’s built with a modern TypeScript stack (React + Node/Express) and designed with a clean **white/red BookMyShow-like UI**.
+It’s built with a modern TypeScript stack (React + Node/Express) and designed with a clean UI.
 
 ---
 
@@ -56,7 +56,7 @@ It’s built with a modern TypeScript stack (React + Node/Express) and designed 
   - screen name
   - theatre name + location
 
-### 4) Seats (BookMyShow-style)
+### 4) Seats
 
 - Seats are created per show (1..N).
 - Seat statuses:
@@ -230,24 +230,20 @@ Open the app at the Vite URL (usually `http://localhost:5173`).
 Base URL: `${VITE_BACKEND_URI}` (example: `http://localhost:5000/api`)
 
 - **Auth**
-
   - `POST /auth/signup`
   - `POST /auth/signin`
   - `POST /auth/verify-otp`
   - `GET /auth/me`
 
 - **Movies**
-
   - `GET /movie/get-all-movies`
   - `GET /movie/:id`
   - `POST /movie/create` (poster upload via multer + ImageKit)
 
 - **Shows**
-
   - `GET /show/movie/:movieId`
 
 - **Seats**
-
   - `GET /seat/:showId` (protected)
 
 - **Booking**
