@@ -43,7 +43,7 @@ async function loadRazorpayScript() {
 
   return await new Promise<boolean>((resolve) => {
     const existing = document.querySelector(
-      'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
+      'script[src="https://checkout.razorpay.com/v1/checkout.js"]',
     );
     if (existing) {
       existing.addEventListener("load", () => resolve(true));
@@ -126,7 +126,7 @@ export default function SeatPage() {
 
       const res: CreateBookingResponse = await createBooking(
         showId,
-        selectedSeats
+        selectedSeats,
       );
       const bookingId = res.booking.id;
       const orderId = res.order.id;
@@ -182,7 +182,7 @@ export default function SeatPage() {
   const selectedCount = selectedSeats.length;
   const totalSeats = seats.length;
   const orderedSeats = [...seats].sort((x, y) =>
-    compareSeatNumber(x.seatNumber, y.seatNumber)
+    compareSeatNumber(x.seatNumber, y.seatNumber),
   );
 
   const getGridCols = (count: number) => {
@@ -321,10 +321,10 @@ export default function SeatPage() {
                       const state = isSelected
                         ? "bg-red-600 text-white shadow-sm shadow-red-600/20"
                         : isBooked
-                        ? "bg-zinc-200 text-zinc-500"
-                        : isLocked
-                        ? "bg-amber-200 text-amber-900"
-                        : "bg-white text-zinc-800 ring-1 ring-zinc-300 hover:ring-red-200";
+                          ? "bg-zinc-200 text-zinc-500"
+                          : isLocked
+                            ? "bg-amber-200 text-amber-900"
+                            : "bg-white text-zinc-800 border border-red-400 ring-1 ring-zinc-300 hover:ring-red-200";
 
                       return (
                         <button
@@ -337,10 +337,10 @@ export default function SeatPage() {
                             isSelected
                               ? `Selected seat ${seat.seatNumber}`
                               : isBooked
-                              ? `Booked seat ${seat.seatNumber}`
-                              : isLocked
-                              ? `Locked seat ${seat.seatNumber}`
-                              : `Available seat ${seat.seatNumber}`
+                                ? `Booked seat ${seat.seatNumber}`
+                                : isLocked
+                                  ? `Locked seat ${seat.seatNumber}`
+                                  : `Available seat ${seat.seatNumber}`
                           }
                           type="button"
                         >

@@ -107,7 +107,7 @@ class BookingService {
 
     await db
       .update(bookings)
-      .set({ status: "confirmed" })
+      .set({ status: "success" })
       .where(eq(bookings.id, data.bookingId));
 
     return true;

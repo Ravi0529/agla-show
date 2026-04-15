@@ -98,6 +98,12 @@ export const seats = pgTable("seats", {
     .$onUpdate(() => new Date()),
 });
 
+export const paymentStatusEnum = pgEnum("booking_status", [
+  "pending",
+  "success",
+  "failed",
+]);
+
 export const bookings = pgTable("bookings", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: uuid("user_id")
@@ -107,7 +113,7 @@ export const bookings = pgTable("bookings", {
     .references(() => shows.id)
     .notNull(),
   totalAmount: integer("total_amount").notNull(),
-  status: varchar("status", { length: 50 }).default("pending"),
+  status: paymentStatusEnum("status").default("pending"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

@@ -42,7 +42,6 @@ class MovieController {
   public async getAllMovies(_: Request, res: Response) {
     try {
       const allMovies = await this.movieService.getAllMovies();
-      console.log(allMovies.length);
 
       return res.status(200).send({ data: allMovies });
     } catch (error) {

@@ -15,6 +15,13 @@
       "when": 1776067456885,
       "tag": "0001_eager_hardball",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776239799118,
+      "tag": "0002_mute_shooting_star",
+      "breakpoints": true
     }
   ]
 }
